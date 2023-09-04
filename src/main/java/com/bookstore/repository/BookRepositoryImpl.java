@@ -1,5 +1,6 @@
 package com.bookstore.repository;
 
+import com.bookstore.exception.DataProcessingException;
 import com.bookstore.model.Book;
 import java.util.List;
 import org.hibernate.Session;
@@ -31,7 +32,7 @@ public class BookRepositoryImpl implements BookRepository {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException("Can't insert book into DB " + book, e);
+            throw new DataProcessingException("Can't insert book into DB " + book, e);
         } finally {
             if (session != null) {
                 session.close();
@@ -45,7 +46,7 @@ public class BookRepositoryImpl implements BookRepository {
             return session.createQuery(
                     "FROM Book", Book.class).getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Can't get all books from DB", e);
+            throw new DataProcessingException("Can't get all books from DB", e);
         }
     }
 }
