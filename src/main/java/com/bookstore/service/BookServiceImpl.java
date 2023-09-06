@@ -35,4 +35,22 @@ public class BookServiceImpl implements BookService {
                 () -> new EntityNotFoundException("Can't find book by id: " + id)
         ));
     }
+
+    @Override
+    public void deleteById(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    @Override
+    public BookDto update(Long id, CreateBookRequestDto bookRequestDto) {
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Can't update because there is no "
+                        + "book in the DB with id: " + id));
+        book.setIsbn(bookRequestDto.getIsbn());
+        book.setAuthor(bookRequestDto.getAuthor());
+        book.setPrice(bookRequestDto.getPrice());
+        book.setDescription(bookRequestDto.getDescription());
+        book.setCoverImage(bookRequestDto.getCoverImage());
+        return bookMapper.toDto(bookRepository.save(book));
+    }
 }
