@@ -32,26 +32,26 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get book by id", description = "Get book by id")
+    @Operation(summary = "Get a book", description = "Get book by id")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getById(id);
     }
 
     @PostMapping
-    @Operation(summary = "Create a new book", description = "Create a new book")
+    @Operation(summary = "Create a book", description = "Create a new book")
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.save(bookRequestDto);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Change a book by id", description = "Change a book by id")
+    @Operation(summary = "Change a book", description = "Change a book by id")
     public BookDto updateBook(@PathVariable Long id,
                               @RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.update(id, bookRequestDto);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete book by id", description = "Delete book by id")
+    @Operation(summary = "Delete a book", description = "Delete book by id")
     public void deleteBookById(@PathVariable Long id) {
         bookService.deleteById(id);
     }
