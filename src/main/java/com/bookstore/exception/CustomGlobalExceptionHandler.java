@@ -1,9 +1,8 @@
 package com.bookstore.exception;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -25,14 +24,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST);
         List<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
                 .toList();
-        body.put("errors", errors);
-        return new ResponseEntity<>(body, headers, status);
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, errors);
+        return new ResponseEntity<>(responseBody, headers, status);
     }
 
     @Override
@@ -41,24 +38,29 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.METHOD_NOT_ALLOWED);
-        body.put("your request", request);
-        body.put("correct request", "/api/books/id");
-        return new ResponseEntity<>(body, headers, status);
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.METHOD_NOT_ALLOWED, List.of(ex.getMessage()));
+        return new ResponseEntity<>(responseBody, headers, status);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(
             EntityNotFoundException ex
     ) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.NOT_FOUND);
-        body.put("error", ex.getMessage());
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.NOT_FOUND, List.of(ex.getMessage()));
         int exceptionStatus = 404;
-        return new ResponseEntity<>(body, HttpStatusCode.valueOf(exceptionStatus));
+        return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
+    }
+
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<Object> handleRegistrationException(
+            RegistrationException ex
+    ) {
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+        int exceptionStatus = 400;
+        return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
     }
 
     private String getErrorMessage(ObjectError e) {
@@ -68,5 +70,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             return field + " " + message;
         }
         return e.getDefaultMessage();
+    }
+
+    @Data
+    private class ResponseBody { //todo builder
+        private LocalDateTime timestamp;
+        private HttpStatus status;
+        private List<String> errors;
+
+        public ResponseBody(LocalDateTime timestamp, HttpStatus status, List<String> errors) {
+            this.timestamp = timestamp;
+            this.status = status;
+            this.errors = errors;
+        }
     }
 }
