@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,12 +38,14 @@ public class BookController {
         return bookService.getById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Create a book", description = "Create a new book")
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.save(bookRequestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Change a book", description = "Change a book by id")
     public BookDto updateBook(@PathVariable Long id,
@@ -50,6 +53,7 @@ public class BookController {
         return bookService.update(id, bookRequestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a book", description = "Delete book by id")
     public void deleteBookById(@PathVariable Long id) {

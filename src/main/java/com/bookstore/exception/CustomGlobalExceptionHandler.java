@@ -73,7 +73,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @Data
-    private class ResponseBody { //todo builder
+    private class ResponseBody {
         private LocalDateTime timestamp;
         private HttpStatus status;
         private List<String> errors;

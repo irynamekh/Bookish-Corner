@@ -3,7 +3,9 @@ package com.bookstore.repository;
 import com.bookstore.model.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String name);
+    @Query("FROM User u LEFT JOIN FETCH u.roles where u.email = :email")
+    Optional<User> findByEmail(String email);
 }
