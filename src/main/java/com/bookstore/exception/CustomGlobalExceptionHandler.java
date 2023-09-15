@@ -49,8 +49,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
                 HttpStatus.NOT_FOUND, List.of(ex.getMessage()));
-        int exceptionStatus = 404;
-        return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
+        return new ResponseEntity<>(responseBody,
+                HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(RegistrationException.class)
@@ -58,9 +58,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             RegistrationException ex
     ) {
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
-        int exceptionStatus = 400;
-        return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
+                HttpStatus.CONFLICT, List.of(ex.getMessage()));
+        return new ResponseEntity<>(responseBody,
+                HttpStatusCode.valueOf(HttpStatus.CONFLICT.value()));
     }
 
     private String getErrorMessage(ObjectError e) {
