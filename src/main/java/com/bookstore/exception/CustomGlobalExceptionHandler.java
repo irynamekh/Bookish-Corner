@@ -1,5 +1,6 @@
 package com.bookstore.exception;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
@@ -61,6 +62,24 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
         int exceptionStatus = 400;
         return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<Object> handleIntegrityConstraintViolationException(
+            SQLIntegrityConstraintViolationException ex
+    ) {
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidUpdateDataException.class)
+    public ResponseEntity<Object> handleInvalidUpdateDataException(
+            InvalidUpdateDataException ex
+    ) {
+        ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     private String getErrorMessage(ObjectError e) {

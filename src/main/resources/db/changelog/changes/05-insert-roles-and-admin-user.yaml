@@ -40,7 +40,7 @@ databaseChangeLog:
       preConditions:
         - sqlCheck:
             expectedResult: 1
-            sql: SELECT COUNT(*) FROM user WHERE email='admin@gmail.com'
+            sql: SELECT COUNT(*) FROM "user" WHERE email='admin@gmail.com'
         - sqlCheck:
             expectedResult: 1
             sql: SELECT COUNT(*) FROM role WHERE role_name='ADMIN'
@@ -50,7 +50,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  valueComputed: (SELECT id FROM user WHERE email='admin@gmail.com')
+                  valueComputed: (SELECT id FROM "user" WHERE email='admin@gmail.com')
               - column:
                   name: role_id
                   valueComputed: (SELECT id FROM role WHERE role_name='ADMIN')
