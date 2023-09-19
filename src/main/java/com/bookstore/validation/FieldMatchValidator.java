@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class FieldMatchValidator implements ConstraintValidator<FieldMatch,
         UserRegistrationRequestDto> {
+    private String field;
+    private String fieldMatch;
 
     @Override
     public boolean isValid(UserRegistrationRequestDto request,
