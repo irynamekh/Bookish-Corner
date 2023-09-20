@@ -80,6 +80,12 @@ public class BookServiceImpl implements BookService {
                 .toList();
     }
 
+    @Override
+    public Book getBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find book by id: " + bookId));
+    }
+
     private boolean isUpdateDataPresent(BookRequestDto bookRequestDto) {
         return (bookRequestDto.getTitle() != null
                 || bookRequestDto.getAuthor() != null

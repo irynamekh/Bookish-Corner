@@ -4,6 +4,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
@@ -51,6 +53,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
                 HttpStatus.NOT_FOUND, List.of(ex.getMessage()));
         int exceptionStatus = 404;
+        log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
     }
 
@@ -70,6 +73,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
+        log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
