@@ -4,7 +4,6 @@ import com.bookstore.dto.book.BookResponseDtoWithoutCategoryIds;
 import com.bookstore.dto.category.CategoryRequestDto;
 import com.bookstore.dto.category.CategoryResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
-import com.bookstore.exception.InvalidUpdateDataException;
 import com.bookstore.mapper.CategoryMapper;
 import com.bookstore.model.Category;
 import com.bookstore.repository.CategoryRepository;
@@ -44,16 +43,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't update because there is no "
                         + "category in the DB with id: " + id));
-        if (categoryDto == null || !isUpdateDataPresent(categoryDto)) {
-            throw new InvalidUpdateDataException("Can't update because the request is empty "
-                    + "or the data is invalid");
-        }
-        if (categoryDto.getName() != null) {
-            category.setName(categoryDto.getName());
-        }
-        if (categoryDto.getDescription() != null) {
-            category.setDescription(categoryDto.getDescription());
-        }
+        category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
@@ -66,10 +57,5 @@ public class CategoryServiceImpl implements CategoryService {
     public List<BookResponseDtoWithoutCategoryIds> getBooksByCategoryId(
             Pageable pageable, Long id) {
         return bookService.findAllByCategoryId(pageable, id);
-    }
-
-    private boolean isUpdateDataPresent(CategoryRequestDto categoryDto) {
-        return (categoryDto.getName() != null
-                || categoryDto.getDescription() != null);
     }
 }

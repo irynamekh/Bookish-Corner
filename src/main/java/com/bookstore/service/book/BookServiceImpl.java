@@ -4,7 +4,6 @@ import com.bookstore.dto.book.BookRequestDto;
 import com.bookstore.dto.book.BookResponseDto;
 import com.bookstore.dto.book.BookResponseDtoWithoutCategoryIds;
 import com.bookstore.exception.EntityNotFoundException;
-import com.bookstore.exception.InvalidUpdateDataException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
@@ -42,28 +41,12 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Can't update because there is no "
                         + "book in the DB with id: " + id));
-        if (bookRequestDto == null || !isUpdateDataPresent(bookRequestDto)) {
-            throw new InvalidUpdateDataException("Can't update because the request is empty "
-                    + "or the data is invalid");
-        }
-        if (bookRequestDto.getIsbn() != null) {
-            book.setIsbn(bookRequestDto.getIsbn());
-        }
-        if (bookRequestDto.getAuthor() != null) {
-            book.setAuthor(bookRequestDto.getAuthor());
-        }
-        if (bookRequestDto.getPrice() != null) {
-            book.setPrice(bookRequestDto.getPrice());
-        }
-        if (bookRequestDto.getDescription() != null) {
-            book.setDescription(bookRequestDto.getDescription());
-        }
-        if (bookRequestDto.getCoverImage() != null) {
-            book.setCoverImage(bookRequestDto.getCoverImage());
-        }
-        if (bookRequestDto.getCategoryIds() != null) {
-            bookMapper.setCategoryToModel(bookRequestDto, book);
-        }
+        book.setIsbn(bookRequestDto.getIsbn());
+        book.setAuthor(bookRequestDto.getAuthor());
+        book.setPrice(bookRequestDto.getPrice());
+        book.setDescription(bookRequestDto.getDescription());
+        book.setCoverImage(bookRequestDto.getCoverImage());
+        bookMapper.setCategoryToModel(bookRequestDto, book);
         return bookMapper.toDto(bookRepository.save(book));
     }
 
@@ -78,15 +61,5 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAllByCategoryId(pageable, categoryId).stream()
                 .map(bookMapper::toDtoWithoutCategories)
                 .toList();
-    }
-
-    private boolean isUpdateDataPresent(BookRequestDto bookRequestDto) {
-        return (bookRequestDto.getTitle() != null
-                || bookRequestDto.getAuthor() != null
-                || bookRequestDto.getDescription() != null
-                || bookRequestDto.getIsbn() != null
-                || bookRequestDto.getPrice() != null
-                || bookRequestDto.getCoverImage() != null
-                || bookRequestDto.getCategoryIds() != null);
     }
 }
