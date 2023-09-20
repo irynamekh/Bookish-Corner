@@ -62,7 +62,7 @@ public class CategoryController {
     @Operation(summary = "Change category",
             description = "Change category by id")
     public CategoryResponseDto updateCategory(@PathVariable Long id,
-                                              @RequestBody CategoryRequestDto categoryDto) {
+                                              @RequestBody @Valid CategoryRequestDto categoryDto) {
         return categoryService.update(id, categoryDto);
     }
 

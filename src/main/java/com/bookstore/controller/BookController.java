@@ -49,7 +49,7 @@ public class BookController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Change a book", description = "Change a book by id")
     public BookResponseDto updateBook(@PathVariable Long id,
-                                      @RequestBody BookRequestDto bookRequestDto) {
+                                      @RequestBody @Valid BookRequestDto bookRequestDto) {
         return bookService.update(id, bookRequestDto);
     }
 
