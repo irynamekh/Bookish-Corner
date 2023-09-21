@@ -40,14 +40,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return shoppingCartRepository.findById(user.getId())
                 .map(shoppingCartMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id: "
+                        + user.getId()));
     }
 
     @Override
     public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id: "
+                        + user.getId()));
 
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(cart);
@@ -64,7 +66,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id: "
+                        + user.getId()));
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
@@ -78,7 +81,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void deleteItem(Long id) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id: "
+                        + user.getId()));
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
