@@ -25,7 +25,7 @@ public class BookRequestDto {
     @ISBN(message = "isbn value shoud be unique")
     private String isbn;
     @NotNull
-    @Min(value = 0)
+    @Min(0)
     private BigDecimal price;
     private String description;
     @URL
