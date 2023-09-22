@@ -13,6 +13,7 @@ import com.bookstore.model.ShoppingCart;
 import com.bookstore.model.User;
 import com.bookstore.repository.OrderItemRepository;
 import com.bookstore.repository.OrderRepository;
+import com.bookstore.security.AuthentificationService;
 import com.bookstore.service.cart.ShoppingCartService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,27 +36,28 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartService shoppingCartService;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
+    private final AuthentificationService authentificationService;
 
+    @Transactional
     @Override
     public List<OrderResponseDto> findAll(Pageable pageable) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Set<OrderItemResponseDto> orderItems =
-                orderRepository.findAllByUserId(user.getId()).stream()
+                orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
                 .map(Order::getOrderItems)
                 .flatMap(Collection::stream)
                 .map(orderItemMapper::toDto)
                 .collect(Collectors.toSet());
-        return orderRepository.findAllByUserId(user.getId()).stream()
+        return orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
                 .map(orderMapper::toDto)
                 .peek(c -> c.setOrderItems(orderItems))
                 .toList();
     }
 
+    @Transactional
     @Override
     public OrderResponseDto save(CreateOrderRequestDto requestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ShoppingCart cart = shoppingCartService.getById(user.getId());
-
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(requestDto.getShippingAddress());
@@ -80,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
         return dto;
     }
 
+    @Transactional
     @Override
     public OrderResponseDto update(Long id, UpdateStatusRequestDto requestDto) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
@@ -88,10 +92,10 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDto(orderRepository.save(order));
     }
 
+    @Transactional
     @Override
     public List<OrderItemResponseDto> findAllByOrderId(Long orderId, Pageable pageable) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Order order = orderRepository.findAllByUserId(user.getId()).stream()
+        Order order = orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
                 .filter(o -> Objects.equals(o.getId(), orderId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -101,10 +105,10 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public OrderItemResponseDto findOrderItemById(Long orderId, Long itemId) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Order order = orderRepository.findAllByUserId(user.getId()).stream()
+        Order order = orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
                 .filter(o -> Objects.equals(o.getId(), orderId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
