@@ -41,9 +41,9 @@ public interface BookMapper {
 
     private Set<Category> getCategoriesById(Set<Long> categoryIds) {
         return categoryIds.stream()
-                .map(l -> {
+                .map(id -> {
                     Category category = new Category();
-                    category.setId(l);
+                    category.setId(id);
                     return category;
                 })
                 .collect(Collectors.toSet());

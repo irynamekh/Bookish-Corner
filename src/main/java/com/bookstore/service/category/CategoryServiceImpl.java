@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponseDto update(Long id, CategoryRequestDto categoryDto) {
         Category category = categoryRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can't update because there is no "
+                new EntityNotFoundException("Can't update category because there is no "
                         + "category in the DB with id: " + id));
         category.setName(categoryDto.getName());
         category.setDescription(categoryDto.getDescription());
