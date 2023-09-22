@@ -12,11 +12,12 @@ import com.bookstore.model.ShoppingCart;
 import com.bookstore.model.User;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.repository.ShoppingCartRepository;
+import com.bookstore.security.AuthentificationService;
 import com.bookstore.service.book.BookService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final CartItemMapper cartItemMapper;
     private final BookService bookService;
+    private final AuthentificationService authentificationService;
 
     @Override
     public void createCart(User user) {
@@ -37,16 +39,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto findCart() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return shoppingCartRepository.findById(user.getId())
-                .map(shoppingCartMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(
+                authentificationService.getUserId())
+                .orElse(new ShoppingCart());
+        return shoppingCartMapper.toDto(shoppingCart);
     }
 
+    @Transactional
     @Override
     public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = getById(user.getId());
+        ShoppingCart cart = shoppingCartRepository.findById(
+                authentificationService.getUserId()).orElse(new ShoppingCart());
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(cart);
         cartItem.setBook(bookService.getBookById(requestDto.getBookId()));
@@ -58,10 +61,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return cartDto;
     }
 
+    @Transactional
     @Override
     public ShoppingCartResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = getById(user.getId());
+        ShoppingCart cart = shoppingCartRepository.findById(authentificationService.getUserId())
+                .orElse(new ShoppingCart());
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
@@ -73,15 +77,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void deleteItem(Long id) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = getById(user.getId());
-        CartItem cartItem = cart.getCartItems().stream()
-                .filter(c -> Objects.equals(c.getId(), id))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find cart item by id: " + id));
-        cartItem.setDeleted(true);
-        shoppingCartRepository.save(cart);
+        cartItemRepository.deleteById(id);
     }
 
     @Override

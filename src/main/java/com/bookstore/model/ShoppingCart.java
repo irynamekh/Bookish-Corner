@@ -25,6 +25,8 @@ public class ShoppingCart {
     @Id
     private Long id;
     @OneToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @MapsId
     private User user;
     @OneToMany(mappedBy = "shoppingCart")

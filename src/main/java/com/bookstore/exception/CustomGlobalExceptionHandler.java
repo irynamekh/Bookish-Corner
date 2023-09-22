@@ -54,7 +54,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
                 HttpStatus.NOT_FOUND, List.of(ex.getMessage()));
         int exceptionStatus = 404;
-        log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(responseBody, HttpStatusCode.valueOf(exceptionStatus));
     }
 
@@ -74,7 +73,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         ResponseBody responseBody = new ResponseBody(LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST, List.of(ex.getMessage()));
-        log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
