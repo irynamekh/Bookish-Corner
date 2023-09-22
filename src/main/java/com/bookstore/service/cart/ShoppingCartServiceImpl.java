@@ -1,9 +1,9 @@
 package com.bookstore.service.cart;
 
 import com.bookstore.dto.cart.ShoppingCartResponseDto;
-import com.bookstore.dto.item.CartItemRequestDto;
-import com.bookstore.dto.item.CartItemRequestDtoWithoutBookId;
-import com.bookstore.dto.item.CartItemResponseDto;
+import com.bookstore.dto.cartitem.CartItemRequestDto;
+import com.bookstore.dto.cartitem.CartItemRequestDtoWithoutBookId;
+import com.bookstore.dto.cartitem.CartItemResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.CartItemMapper;
 import com.bookstore.mapper.ShoppingCartMapper;
@@ -46,9 +46,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
-
+        ShoppingCart cart = getById(user.getId());
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(cart);
         cartItem.setBook(bookService.getBookById(requestDto.getBookId()));
@@ -63,8 +61,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+        ShoppingCart cart = getById(user.getId());
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
@@ -77,8 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void deleteItem(Long id) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ShoppingCart cart = shoppingCartRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Can't find shopping cart by id"));
+        ShoppingCart cart = getById(user.getId());
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
@@ -86,5 +82,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         "Can't find cart item by id: " + id));
         cartItem.setDeleted(true);
         shoppingCartRepository.save(cart);
+    }
+
+    @Override
+    public ShoppingCart getById(Long id) {
+        return shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find shopping cart by id: " + id));
     }
 }

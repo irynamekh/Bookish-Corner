@@ -1,8 +1,8 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.cart.ShoppingCartResponseDto;
-import com.bookstore.dto.item.CartItemRequestDto;
-import com.bookstore.dto.item.CartItemRequestDtoWithoutBookId;
+import com.bookstore.dto.cartitem.CartItemRequestDto;
+import com.bookstore.dto.cartitem.CartItemRequestDtoWithoutBookId;
 import com.bookstore.service.cart.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
