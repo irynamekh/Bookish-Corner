@@ -31,14 +31,14 @@ public class OrderController {
     @Operation(summary = "Get all orders",
             description = "Retrieve user's order history")
     public List<OrderResponseDto> getAll(Pageable pageable) {
-        return orderService.findAll(pageable);
+        return orderService.getAll(pageable);
     }
 
     @GetMapping("/{id}/items")
     @Operation(summary = "Get all order items",
             description = "Retrieve all OrderItems for a specific order")
     public List<OrderItemResponseDto> getAll(@PathVariable Long id, Pageable pageable) {
-        return orderService.findAllByOrderId(id, pageable);
+        return orderService.getAllByOrderId(id, pageable);
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
@@ -46,7 +46,7 @@ public class OrderController {
             description = "Retrieve a specific OrderItem within an order by item id")
     public OrderItemResponseDto getOrderItem(@PathVariable Long orderId,
                                              @PathVariable Long itemId) {
-        return orderService.findOrderItemById(orderId, itemId);
+        return orderService.getOrderItemById(orderId, itemId);
     }
 
     @PostMapping
@@ -63,6 +63,6 @@ public class OrderController {
             description = "Update order status for user's order")
     public OrderResponseDto updateOrderStatus(@PathVariable Long id,
                                       @RequestBody @Valid UpdateStatusRequestDto requestDto) {
-        return orderService.update(id, requestDto);
+        return orderService.updateOrderStatus(id, requestDto);
     }
 }

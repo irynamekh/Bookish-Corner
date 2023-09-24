@@ -17,7 +17,6 @@ import com.bookstore.security.AuthentificationService;
 import com.bookstore.service.cart.ShoppingCartService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,16 +39,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public List<OrderResponseDto> findAll(Pageable pageable) {
-        Set<OrderItemResponseDto> orderItems =
-                orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
-                .map(Order::getOrderItems)
-                .flatMap(Collection::stream)
-                .map(orderItemMapper::toDto)
-                .collect(Collectors.toSet());
+    public List<OrderResponseDto> getAll(Pageable pageable) {
         return orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
                 .map(orderMapper::toDto)
-                .peek(c -> c.setOrderItems(orderItems))
                 .toList();
     }
 
@@ -66,26 +58,14 @@ public class OrderServiceImpl implements OrderService {
                 .map(c -> c.getBook().getPrice().multiply(BigDecimal.valueOf(c.getQuantity())))
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add));
         orderRepository.save(order);
-
-        Set<OrderItem> orderItems = cart.getCartItems().stream()
-                .map(orderItemMapper::fromCartItem)
-                .peek(oi -> oi.setPrice(oi.getPrice().multiply(
-                        BigDecimal.valueOf(oi.getQuantity()))))
-                .peek(oi -> oi.setOrder(order))
-                .peek(orderItemRepository::save)
-                .collect(Collectors.toSet());
-        Set<OrderItemResponseDto> cartItems = orderItems.stream()
-                .map(orderItemMapper::toDto)
-                .collect(Collectors.toSet());
-
         OrderResponseDto dto = orderMapper.toDto(order);
-        dto.setOrderItems(cartItems);
+        dto.setOrderItems(getOrderItemDtos(getOrderItems(cart, order)));
         return dto;
     }
 
     @Transactional
     @Override
-    public OrderResponseDto update(Long id, UpdateStatusRequestDto requestDto) {
+    public OrderResponseDto updateOrderStatus(Long id, UpdateStatusRequestDto requestDto) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
                 "Can't find order by id: " + id));
         order.setStatus(requestDto.getStatus());
@@ -94,30 +74,44 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public List<OrderItemResponseDto> findAllByOrderId(Long orderId, Pageable pageable) {
-        Order order = orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
-                .filter(o -> Objects.equals(o.getId(), orderId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find order by id: " + orderId));
-        return order.getOrderItems().stream()
+    public List<OrderItemResponseDto> getAllByOrderId(Long orderId, Pageable pageable) {
+        return getOrderById(orderId).getOrderItems().stream()
                 .map(orderItemMapper::toDto)
                 .toList();
     }
 
     @Transactional
     @Override
-    public OrderItemResponseDto findOrderItemById(Long orderId, Long itemId) {
-        Order order = orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
-                .filter(o -> Objects.equals(o.getId(), orderId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find order by id: " + orderId));
-        return order.getOrderItems().stream()
+    public OrderItemResponseDto getOrderItemById(Long orderId, Long itemId) {
+        return getOrderById(orderId).getOrderItems().stream()
                 .filter(c -> Objects.equals(c.getId(), itemId))
                 .map(orderItemMapper::toDto)
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order item by id: " + itemId));
+    }
+
+    private Order getOrderById(Long id) {
+        return orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
+                .filter(o -> Objects.equals(o.getId(), id))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find order by id: " + id));
+    }
+
+    private Set<OrderItem> getOrderItems(ShoppingCart cart, Order order) {
+        return cart.getCartItems().stream()
+                .map(orderItemMapper::mapCartItemToOrderItem)
+                .peek(oi -> oi.setPrice(oi.getPrice().multiply(
+                        BigDecimal.valueOf(oi.getQuantity()))))
+                .peek(oi -> oi.setOrder(order))
+                .peek(orderItemRepository::save)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<OrderItemResponseDto> getOrderItemDtos(Set<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(orderItemMapper::toDto)
+                .collect(Collectors.toSet());
     }
 }

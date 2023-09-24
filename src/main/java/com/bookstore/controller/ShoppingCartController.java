@@ -3,6 +3,7 @@ package com.bookstore.controller;
 import com.bookstore.dto.cart.ShoppingCartResponseDto;
 import com.bookstore.dto.cartitem.CartItemRequestDto;
 import com.bookstore.dto.cartitem.CartItemRequestDtoWithoutBookId;
+import com.bookstore.dto.cartitem.CartItemResponseDto;
 import com.bookstore.service.cart.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,7 +47,7 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Change item",
             description = "Change book quantity in item by id")
-    public ShoppingCartResponseDto updateItemQuantity(
+    public CartItemResponseDto updateItemQuantity(
             @PathVariable Long id,
             @RequestBody @Valid CartItemRequestDtoWithoutBookId requestDto) {
         return shoppingCartService.update(id, requestDto);

@@ -13,7 +13,7 @@ public interface OrderItemMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "order", ignore = true)
     @Mapping(source = "book.price", target = "price")
-    OrderItem fromCartItem(CartItem cartItem);
+    OrderItem mapCartItemToOrderItem(CartItem cartItem);
 
     @Mapping(source = "book.id", target = "bookId")
     OrderItemResponseDto toDto(OrderItem orderItem);

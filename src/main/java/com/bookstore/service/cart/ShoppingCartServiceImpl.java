@@ -39,17 +39,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto findCart() {
-        ShoppingCart shoppingCart = shoppingCartRepository.findById(
-                authentificationService.getUserId())
-                .orElse(new ShoppingCart());
-        return shoppingCartMapper.toDto(shoppingCart);
+        return shoppingCartMapper.toDto(getShoppingCart());
     }
 
     @Transactional
     @Override
     public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto) {
-        ShoppingCart cart = shoppingCartRepository.findById(
-                authentificationService.getUserId()).orElse(new ShoppingCart());
+        ShoppingCart cart = getShoppingCart();
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(cart);
         cartItem.setBook(bookService.getBookById(requestDto.getBookId()));
@@ -63,16 +59,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @Override
-    public ShoppingCartResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
-        ShoppingCart cart = shoppingCartRepository.findById(authentificationService.getUserId())
-                .orElse(new ShoppingCart());
+    public CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
+        ShoppingCart cart = getShoppingCart();
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item by id: " + id));
         cartItem.setQuantity(requestDto.getQuantity());
-        return shoppingCartMapper.toDto(shoppingCartRepository.save(cart));
+        return cartItemMapper.toDto(cartItemRepository.save(cartItem));
     }
 
     @Override
@@ -85,5 +80,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart by id: " + id));
+    }
+
+    private ShoppingCart getShoppingCart() {
+        return shoppingCartRepository.findById(authentificationService.getUserId())
+                .orElse(new ShoppingCart());
     }
 }
