@@ -23,9 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE book SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted=false")
-@Table(name = "user")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +40,8 @@ public class User implements UserDetails {
     private String lastName;
     private String shippingAddress;
     @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
+            name = "users_role",
+            joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     @EqualsAndHashCode.Exclude

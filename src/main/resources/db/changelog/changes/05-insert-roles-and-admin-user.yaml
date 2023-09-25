@@ -20,7 +20,7 @@ databaseChangeLog:
       author: iryna_mekh
       changes:
         - insert:
-            tableName: user
+            tableName: users
             columns:
               - column:
                   name: email
@@ -40,17 +40,17 @@ databaseChangeLog:
       preConditions:
         - sqlCheck:
             expectedResult: 1
-            sql: SELECT COUNT(*) FROM "user" WHERE email='admin@gmail.com'
+            sql: SELECT COUNT(*) FROM users WHERE email='admin@gmail.com'
         - sqlCheck:
             expectedResult: 1
             sql: SELECT COUNT(*) FROM role WHERE role_name='ADMIN'
       changes:
         - insert:
-            tableName: user_role
+            tableName: users_role
             columns:
               - column:
-                  name: user_id
-                  valueComputed: (SELECT id FROM "user" WHERE email='admin@gmail.com')
+                  name: users_id
+                  valueComputed: (SELECT id FROM users WHERE email='admin@gmail.com')
               - column:
                   name: role_id
                   valueComputed: (SELECT id FROM role WHERE role_name='ADMIN')

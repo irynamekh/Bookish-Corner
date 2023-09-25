@@ -1,13 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-role-table
+      id: create-users-role-table
       author: iryna_mekh
       changes:
         - createTable:
-            tableName: user_role
+            tableName: users_role
             columns:
               - column:
-                  name: user_id
+                  name: users_id
                   type: bigint
                   constraints:
                     nullable: false
