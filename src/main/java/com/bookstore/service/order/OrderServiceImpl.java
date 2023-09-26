@@ -7,6 +7,7 @@ import com.bookstore.dto.orderitem.OrderItemResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.OrderItemMapper;
 import com.bookstore.mapper.OrderMapper;
+import com.bookstore.model.CartItem;
 import com.bookstore.model.Order;
 import com.bookstore.model.OrderItem;
 import com.bookstore.model.ShoppingCart;
@@ -18,7 +19,6 @@ import com.bookstore.service.cart.ShoppingCartService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         order.setShippingAddress(requestDto.getShippingAddress());
         order.setOrderDate(LocalDateTime.now());
         order.setTotal(cart.getCartItems().stream()
-                .map(c -> c.getBook().getPrice().multiply(BigDecimal.valueOf(c.getQuantity())))
+                .map(this::getPrice)
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add));
         orderRepository.save(order);
         OrderResponseDto dto = orderMapper.toDto(order);
@@ -83,18 +83,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public OrderItemResponseDto getOrderItemById(Long orderId, Long itemId) {
-        return getOrderById(orderId).getOrderItems().stream()
-                .filter(c -> Objects.equals(c.getId(), itemId))
+        return orderItemRepository.findById(itemId)
                 .map(orderItemMapper::toDto)
-                .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order item by id: " + itemId));
     }
 
     private Order getOrderById(Long id) {
-        return orderRepository.findAllByUserId(authentificationService.getUserId()).stream()
-                .filter(o -> Objects.equals(o.getId(), id))
-                .findFirst()
+        return (Order) orderRepository.findByUserId(authentificationService.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find order by id: " + id));
     }
@@ -113,5 +109,9 @@ public class OrderServiceImpl implements OrderService {
         return orderItems.stream()
                 .map(orderItemMapper::toDto)
                 .collect(Collectors.toSet());
+    }
+
+    private BigDecimal getPrice(CartItem cartItem) {
+        return cartItem.getBook().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
     }
 }
