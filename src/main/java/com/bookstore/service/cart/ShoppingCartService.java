@@ -10,11 +10,11 @@ import com.bookstore.model.User;
 public interface ShoppingCartService {
     void createCart(User user);
 
-    ShoppingCartResponseDto findCart();
+    ShoppingCartResponseDto findCart(Long userId);
 
-    ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto);
+    ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto, Long userId);
 
-    CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId categoryDto);
+    CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId categoryDto, Long userId);
 
     void deleteItem(Long id);
 

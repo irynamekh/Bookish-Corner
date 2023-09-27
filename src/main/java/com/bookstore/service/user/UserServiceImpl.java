@@ -2,6 +2,7 @@ package com.bookstore.service.user;
 
 import com.bookstore.dto.user.UserRegistrationRequestDto;
 import com.bookstore.dto.user.UserResponseDto;
+import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.exception.RegistrationException;
 import com.bookstore.mapper.UserMapper;
 import com.bookstore.model.Role;
@@ -37,5 +38,11 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
         shoppingCartService.createCart(savedUser);
         return userMapper.toDto(savedUser);
+    }
+
+    public User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find user by id: " + userId));
     }
 }

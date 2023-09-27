@@ -4,12 +4,14 @@ import com.bookstore.dto.cart.ShoppingCartResponseDto;
 import com.bookstore.dto.cartitem.CartItemRequestDto;
 import com.bookstore.dto.cartitem.CartItemRequestDtoWithoutBookId;
 import com.bookstore.dto.cartitem.CartItemResponseDto;
+import com.bookstore.model.User;
 import com.bookstore.service.cart.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,8 +32,9 @@ public class ShoppingCartController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Get shopping cart",
             description = "Get users shopping cart with its items")
-    public ShoppingCartResponseDto getShoppingCart() {
-        return shoppingCartService.findCart();
+    public ShoppingCartResponseDto getShoppingCart(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.findCart(user.getId());
     }
 
     @PostMapping
@@ -39,8 +42,10 @@ public class ShoppingCartController {
     @Operation(summary = "Create category",
             description = "Create a new category")
     public ShoppingCartResponseDto createCategory(
-            @RequestBody @Valid CartItemRequestDto requestDto) {
-        return shoppingCartService.saveItem(requestDto);
+            @RequestBody @Valid CartItemRequestDto requestDto,
+            Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.saveItem(requestDto, user.getId());
     }
 
     @PutMapping("/cart-items/{id}")
@@ -49,8 +54,10 @@ public class ShoppingCartController {
             description = "Change book quantity in item by id")
     public CartItemResponseDto updateItemQuantity(
             @PathVariable Long id,
-            @RequestBody @Valid CartItemRequestDtoWithoutBookId requestDto) {
-        return shoppingCartService.update(id, requestDto);
+            @RequestBody @Valid CartItemRequestDtoWithoutBookId requestDto,
+            Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.update(id, requestDto, user.getId());
     }
 
     @DeleteMapping("/cart-items/{id}")

@@ -12,7 +12,6 @@ import com.bookstore.model.ShoppingCart;
 import com.bookstore.model.User;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.repository.ShoppingCartRepository;
-import com.bookstore.security.AuthentificationService;
 import com.bookstore.service.book.BookService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemRepository cartItemRepository;
     private final CartItemMapper cartItemMapper;
     private final BookService bookService;
-    private final AuthentificationService authentificationService;
 
     @Override
     public void createCart(User user) {
@@ -38,14 +36,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartResponseDto findCart() {
-        return shoppingCartMapper.toDto(getShoppingCart());
+    public ShoppingCartResponseDto findCart(Long userId) {
+        return shoppingCartMapper.toDto(getById(userId));
     }
 
     @Transactional
     @Override
-    public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto) {
-        ShoppingCart cart = getShoppingCart();
+    public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto, Long userId) {
+        ShoppingCart cart = getById(userId);
         CartItem cartItem = new CartItem();
         cartItem.setShoppingCart(cart);
         cartItem.setBook(bookService.getBookById(requestDto.getBookId()));
@@ -59,8 +57,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @Override
-    public CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto) {
-        ShoppingCart cart = getShoppingCart();
+    public CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto,
+                                      Long userId) {
+        ShoppingCart cart = getById(userId);
         CartItem cartItem = cart.getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
@@ -80,10 +79,5 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart by id: " + id));
-    }
-
-    private ShoppingCart getShoppingCart() {
-        return shoppingCartRepository.findById(authentificationService.getUserId())
-                .orElse(new ShoppingCart());
     }
 }
