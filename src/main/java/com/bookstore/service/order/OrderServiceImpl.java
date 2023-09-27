@@ -98,10 +98,7 @@ public class OrderServiceImpl implements OrderService {
     private Set<OrderItem> getOrderItems(ShoppingCart cart, Order order) {
         return cart.getCartItems().stream()
                 .map(orderItemMapper::mapCartItemToOrderItem)
-                .peek(oi -> oi.setPrice(oi.getPrice().multiply(
-                        BigDecimal.valueOf(oi.getQuantity()))))
-                .peek(oi -> oi.setOrder(order))
-                .peek(orderItemRepository::save)
+                .peek(oi -> saveOrderItem(oi, order))
                 .collect(Collectors.toSet());
     }
 
@@ -113,5 +110,12 @@ public class OrderServiceImpl implements OrderService {
 
     private BigDecimal getPrice(CartItem cartItem) {
         return cartItem.getBook().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+    }
+
+    private void saveOrderItem(OrderItem orderItem, Order order) {
+        orderItem.setPrice(orderItem.getPrice().multiply(
+                BigDecimal.valueOf(orderItem.getQuantity())));
+        orderItem.setOrder(order);
+        orderItemRepository.save(orderItem);
     }
 }
