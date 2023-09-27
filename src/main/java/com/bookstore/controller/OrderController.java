@@ -50,10 +50,8 @@ public class OrderController {
     @Operation(summary = "Get order item by id",
             description = "Retrieve a specific OrderItem within an order by item id")
     public OrderItemResponseDto getOrderItem(@PathVariable Long orderId,
-                                             @PathVariable Long itemId,
-                                             Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return orderService.getOrderItemById(orderId, itemId, user.getId());
+                                             @PathVariable Long itemId) {
+        return orderService.getOrderItemById(orderId, itemId);
     }
 
     @PostMapping
