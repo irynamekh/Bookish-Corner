@@ -37,20 +37,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto findCart(Long userId) {
-        return shoppingCartMapper.toDto(getById(userId));
+        return shoppingCartMapper.toDto(getShoppingCartById(userId));
     }
 
     @Transactional
     @Override
     public ShoppingCartResponseDto saveItem(CartItemRequestDto requestDto, Long userId) {
-        ShoppingCart cart = getById(userId);
         CartItem cartItem = new CartItem();
-        cartItem.setShoppingCart(cart);
+        cartItem.setShoppingCart(getShoppingCartById(userId));
         cartItem.setBook(bookService.getBookById(requestDto.getBookId()));
         cartItem.setQuantity(requestDto.getQuantity());
 
         CartItemResponseDto itemDto = cartItemMapper.toDto(cartItemRepository.save(cartItem));
-        ShoppingCartResponseDto cartDto = shoppingCartMapper.toDto(cart);
+        ShoppingCartResponseDto cartDto = shoppingCartMapper.toDto(getShoppingCartById(userId));
         cartDto.getCartItems().add(itemDto);
         return cartDto;
     }
@@ -59,8 +58,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public CartItemResponseDto update(Long id, CartItemRequestDtoWithoutBookId requestDto,
                                       Long userId) {
-        ShoppingCart cart = getById(userId);
-        CartItem cartItem = cart.getCartItems().stream()
+        CartItem cartItem = getShoppingCartById(userId).getCartItems().stream()
                 .filter(c -> Objects.equals(c.getId(), id))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -70,14 +68,21 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void deleteItem(Long id) {
+    public void deleteItem(Long id, Long userId) {
+        existsItemByIdAndShoppingCartId(id, userId);
         cartItemRepository.deleteById(id);
     }
 
-    @Override
-    public ShoppingCart getById(Long id) {
+    public ShoppingCart getShoppingCartById(Long id) {
         return shoppingCartRepository.findById(id)
+                .orElseGet(() -> shoppingCartRepository.save(new ShoppingCart()));
+    }
+
+    private void existsItemByIdAndShoppingCartId(Long itemId, Long cartId) {
+        getShoppingCartById(cartId).getCartItems().stream()
+                .filter(cartItem -> cartItem.getId().equals(itemId))
+                .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Can't find shopping cart by id: " + id));
+                        "Can't find shopping cart item by id: " + itemId));
     }
 }

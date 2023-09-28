@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public OrderResponseDto save(CreateOrderRequestDto requestDto, Long userId) {
-        ShoppingCart cart = shoppingCartService.getById(userId);
+        ShoppingCart cart = shoppingCartService.getShoppingCartById(userId);
         Order order = new Order();
         order.setUser(userService.getUser(userId));
         order.setShippingAddress(requestDto.getShippingAddress());
@@ -96,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
     private Set<OrderItem> getOrderItems(ShoppingCart cart, Order order) {
         return cart.getCartItems().stream()
                 .map(orderItemMapper::mapCartItemToOrderItem)
-                .peek(oi -> saveOrderItem(oi, order))
+                .peek(orderItem -> saveOrderItem(orderItem, order))
                 .collect(Collectors.toSet());
     }
 
