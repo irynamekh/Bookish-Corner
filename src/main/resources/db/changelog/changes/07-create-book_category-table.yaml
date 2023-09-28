@@ -12,7 +12,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    references: book(id)
+                    referencedTableName: book
+                    referencedColumnNames: id
                     foreignKeyName: fk_book_category_book_id
               - column:
                   name: category_id
@@ -20,5 +21,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    references: category(id)
+                    referencedTableName: category
+                    referencedColumnNames: id
                     foreignKeyName: fk_book_category_category_id

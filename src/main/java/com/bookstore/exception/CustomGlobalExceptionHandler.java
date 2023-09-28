@@ -1,5 +1,6 @@
 package com.bookstore.exception;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -95,6 +96,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @Data
     private class ResponseBody {
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private LocalDateTime timestamp;
         private HttpStatus status;
         private List<String> errors;
