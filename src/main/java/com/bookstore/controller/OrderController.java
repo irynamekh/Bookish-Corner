@@ -4,6 +4,7 @@ import com.bookstore.dto.order.CreateOrderRequestDto;
 import com.bookstore.dto.order.OrderResponseDto;
 import com.bookstore.dto.order.UpdateStatusRequestDto;
 import com.bookstore.dto.orderitem.OrderItemResponseDto;
+import com.bookstore.model.User;
 import com.bookstore.service.order.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,15 +32,18 @@ public class OrderController {
     @GetMapping
     @Operation(summary = "Get all orders",
             description = "Retrieve user's order history")
-    public List<OrderResponseDto> getAll(Pageable pageable) {
-        return orderService.getAll(pageable);
+    public List<OrderResponseDto> getAll(Pageable pageable, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.getAll(pageable, user.getId());
     }
 
     @GetMapping("/{id}/items")
     @Operation(summary = "Get all order items",
             description = "Retrieve all OrderItems for a specific order")
-    public List<OrderItemResponseDto> getAll(@PathVariable Long id, Pageable pageable) {
-        return orderService.getAllByOrderId(id, pageable);
+    public List<OrderItemResponseDto> getAll(@PathVariable Long id, Pageable pageable,
+                                             Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.getAllByOrderId(id, pageable, user.getId());
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
@@ -53,8 +58,9 @@ public class OrderController {
     @Operation(summary = "Place an order",
             description = "Create a new order")
     public OrderResponseDto createOrder(
-            @RequestBody @Valid CreateOrderRequestDto requestDto) {
-        return orderService.save(requestDto);
+            @RequestBody @Valid CreateOrderRequestDto requestDto, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.save(requestDto, user.getId());
     }
 
     @PatchMapping("/{id}")
