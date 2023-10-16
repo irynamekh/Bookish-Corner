@@ -39,9 +39,9 @@ public class ShoppingCartController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    @Operation(summary = "Create category",
-            description = "Create a new category")
-    public ShoppingCartResponseDto createCategory(
+    @Operation(summary = "Create new shopping cart item",
+            description = "Create new item in shopping cart")
+    public ShoppingCartResponseDto createCartItem(
             @RequestBody @Valid CartItemRequestDto requestDto,
             Authentication authentication) {
         User user = (User) authentication.getPrincipal();
