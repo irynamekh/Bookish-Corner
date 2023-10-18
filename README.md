@@ -56,7 +56,22 @@ You can easily change the name and description of these models, using them as th
 - **Order**: Represents an order placed by a user.
 - **OrderItem**: Represents an item in a user's order.
 
+### Controllers
+
+This project has five controllers waiting for customer requests:
+
+| Сontrollers              |  Endpoint   |                                     Description                                     |
+|--------------------------|:-----------:|:-----------------------------------------------------------------------------------:|
+| AuthenticationController |    /auth    |                     handles user registration and authorization                     |
+| BookController           |   /books    |      manages book operations, such as search, creation, updating and deleting       |
+| CategoryController       | /categories |          manages categories, allows to create, update, retrieve and delete          |
+| ShoppingCartController   |    /cart    | manages shopping cart state, allows to add, update, retrieve and delete cart items  |
+| OrderController          |   /orders   | handles order management, creating, updating, retrieving order history and deleting |
+
+
 ### Features
+
+> The project implements role-based access control: there are two roles: USER (default) and ADMIN.
 
 #### Non Authenticated User Can:
 
@@ -87,7 +102,12 @@ You can easily change the name and description of these models, using them as th
 
 - **Manage Books**: Create, change and delete book.
 - **Manage Book Categories**: Create, change and delete category.
-- **Manage Orders**: Update order status for user's order
+- **Manage Orders**: Update order status `(COMPLETED, PENDING, DELIVERED)` for user's order 
+
+
+> - For security, I added JWT Support: JSON Web Tokens are used for authentication and securing API endpoints.
+> - To handle exceptions gracefully and provide consistent error responses GlobalExceptionHandler was implemented.
+> - Thanks to the soft delete concept implemented in this project, data remains available in the database even after it is deleted by users or administrators. This functionality may be useful for generating application usage statistics in the future.
 
 <hr>
 <div id="prerequisites" align="center">
