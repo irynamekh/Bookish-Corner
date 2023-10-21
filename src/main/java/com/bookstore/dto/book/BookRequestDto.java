@@ -7,10 +7,12 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.ISBN;
 import org.hibernate.validator.constraints.URL;
 
 @Data
+@Accessors(chain = true)
 public class BookRequestDto {
     @NotNull
     @NotBlank
