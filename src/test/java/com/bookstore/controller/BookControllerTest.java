@@ -39,9 +39,9 @@ class BookControllerTest {
     private static final BigDecimal PRICE = BigDecimal.valueOf(699);
     private static final BigDecimal UPDATED_PRICE = BigDecimal.valueOf(599);
     private static final String ADD_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/add_book_and_category.sql";
+            "classpath:database/book&category/add_book_and_category.sql";
     private static final String DELETE_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/delete_book_and_category.sql";
+            "classpath:database/book&category/delete_book_and_category.sql";
     private static final BookRequestDto VALID_BOOK_REQUEST_DTO = new BookRequestDto()
                     .setTitle(TITLE)
                     .setAuthor(AUTHOR)

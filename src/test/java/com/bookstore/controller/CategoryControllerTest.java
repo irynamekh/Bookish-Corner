@@ -41,9 +41,9 @@ class CategoryControllerTest {
     private static final String VALID_DESCRIPTION = "Imaginative and futuristic concepts "
             + "such as space exploration and time travel.";
     private static final String ADD_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/add_book_and_category.sql";
+            "classpath:database/book&category/add_book_and_category.sql";
     private static final String DELETE_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/delete_book_and_category.sql";
+            "classpath:database/book&category/delete_book_and_category.sql";
     private static final CategoryRequestDto VALID_CATEGORY_REQUEST_DTO = new CategoryRequestDto()
             .setName(VALID_NAME)
             .setDescription(VALID_DESCRIPTION);

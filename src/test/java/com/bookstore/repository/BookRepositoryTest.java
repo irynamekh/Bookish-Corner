@@ -40,9 +40,9 @@ class BookRepositoryTest {
             .setPrice(PRICE)
             .setCategories(Set.of(VALID_CATEGORY));
     private static final String ADD_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/add_book_and_category.sql";
+            "classpath:database/book&category/add_book_and_category.sql";
     private static final String DELETE_BOOK_AND_CATEGORY_SCRIPT =
-            "classpath:database/delete_book_and_category.sql";
+            "classpath:database/book&category/delete_book_and_category.sql";
     @Autowired
     private BookRepository bookRepository;
 
