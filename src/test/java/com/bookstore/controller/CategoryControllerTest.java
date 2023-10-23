@@ -101,7 +101,7 @@ class CategoryControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getCategoryById_validRequest_returnsValidDto() throws Exception {
-        MvcResult result = mockMvc.perform(get("/categories/" + VALID_ID)
+        MvcResult result = mockMvc.perform(get("/categories/{id}", VALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -122,7 +122,7 @@ class CategoryControllerTest {
         List<BookResponseDtoWithoutCategoryIds> expected =
                 List.of(VALID_BOOK_DTO_WITHOUT_CATEGORY_IDS);
 
-        MvcResult result = mockMvc.perform(get("/categories/" + VALID_ID + "/books")
+        MvcResult result = mockMvc.perform(get("/categories/{id}/books", VALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -157,7 +157,7 @@ class CategoryControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void updateCategory_validRequest_returnsValidDto() throws Exception {
-        MvcResult result = mockMvc.perform(put("/categories/" + VALID_ID)
+        MvcResult result = mockMvc.perform(put("/categories/{id}", VALID_ID)
                         .content(objectMapper.writeValueAsString(UPDATED_CATEGORY_REQUEST_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -176,7 +176,7 @@ class CategoryControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteCategory_validRequest_isOk() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/categories/" + VALID_ID)
+        MvcResult result = mockMvc.perform(delete("/categories/{id}", VALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();

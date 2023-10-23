@@ -120,7 +120,7 @@ class BookControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getBookById_validRequest_returnsValidDto() throws Exception {
-        MvcResult result = mockMvc.perform(get("/books/" + VALID_ID)
+        MvcResult result = mockMvc.perform(get("/books/{id}", VALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -157,7 +157,7 @@ class BookControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void updateBook_validRequest_returnsValidDto() throws Exception {
-        MvcResult result = mockMvc.perform(put("/books/" + VALID_ID)
+        MvcResult result = mockMvc.perform(put("/books/{id}", VALID_ID)
                         .content(objectMapper.writeValueAsString(UPDATED_BOOK_REQUEST_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -176,7 +176,7 @@ class BookControllerTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteBookById_validRequest_isOk() throws Exception {
-        MvcResult result = mockMvc.perform(delete("/books/" + VALID_ID)
+        MvcResult result = mockMvc.perform(delete("/books/{id}", VALID_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();

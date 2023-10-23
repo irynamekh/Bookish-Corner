@@ -108,7 +108,7 @@ class ShoppingCartControllerTest {
         String token = jwtUtil.generateToken("user@example.com");
 
         CartItemResponseDto expected = buildValidItemResponseDto(VALID_ID);
-        MvcResult result = mockMvc.perform(put("/cart/cart-items/" + VALID_ID)
+        MvcResult result = mockMvc.perform(put("/cart/cart-items/{id}", VALID_ID)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .content(objectMapper.writeValueAsString(
                                 buildCartItemRequestDtoWithoutBookId()))
@@ -132,7 +132,7 @@ class ShoppingCartControllerTest {
         String token = jwtUtil.generateToken("user@example.com");
 
         CartItemResponseDto expected = buildValidItemResponseDto(VALID_ID);
-        MvcResult result = mockMvc.perform(delete("/cart/cart-items/" + VALID_ID)
+        MvcResult result = mockMvc.perform(delete("/cart/cart-items/{id}", VALID_ID)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .content(objectMapper.writeValueAsString(VALID_ID))
                         .contentType(MediaType.APPLICATION_JSON))
