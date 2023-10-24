@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.when;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -120,7 +119,7 @@ class BookServiceImplTest {
     void deleteById_validBookID_isOk() {
         doNothing().when(bookRepository).deleteById(VALID_ID);
         bookServiceImpl.deleteById(VALID_ID);
-        verify(bookRepository, times(1)).deleteById(VALID_ID);
+        verify(bookRepository).deleteById(VALID_ID);
     }
 
     @Test

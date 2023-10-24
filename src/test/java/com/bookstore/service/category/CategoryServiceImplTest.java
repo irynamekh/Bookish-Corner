@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,7 +110,7 @@ class CategoryServiceImplTest {
     void deleteById_validCategoryID_isOk() {
         doNothing().when(categoryRepository).deleteById(VALID_ID);
         categoryService.deleteById(VALID_ID);
-        verify(categoryRepository, times(1)).deleteById(VALID_ID);
+        verify(categoryRepository).deleteById(VALID_ID);
     }
 
     @Test

@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +73,7 @@ class ShoppingCartServiceImplTest {
         when(shoppingCartRepository.save(buildValidCart())).thenReturn(buildValidCart());
 
         shoppingCartService.createCart(VALID_USER);
-        verify(shoppingCartRepository, times(1)).save(buildValidCart());
+        verify(shoppingCartRepository).save(buildValidCart());
     }
 
     @Test
@@ -139,7 +138,7 @@ class ShoppingCartServiceImplTest {
 
         shoppingCartService.deleteItem(VALID_ID, VALID_USER.getId());
 
-        verify(cartItemRepository, times(1)).deleteById(VALID_ID);
+        verify(cartItemRepository).deleteById(VALID_ID);
     }
 
     private ShoppingCart buildValidCart() {
