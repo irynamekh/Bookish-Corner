@@ -67,7 +67,9 @@ class BookRepositoryTest {
     @Sql(scripts = DELETE_BOOK_AND_CATEGORY_SCRIPT,
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void getById_validBookId_returnsValidBook() {
-        assertEquals(VALID_BOOK, bookRepository.getById(VALID_ID));
+        Book actual = bookRepository.getById(VALID_ID);
+
+        assertEquals(VALID_BOOK, actual);
     }
 
     @Test

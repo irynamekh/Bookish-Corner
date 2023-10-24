@@ -80,8 +80,9 @@ class BookServiceImplTest {
         when(bookMapper.toDto(VALID_BOOK)).thenReturn(VALID_BOOK_RESPONSE_DTO);
 
         List<BookResponseDto> expected = List.of(VALID_BOOK_RESPONSE_DTO);
+        List<BookResponseDto> actual = bookServiceImpl.findAll(PAGEABLE);
 
-        assertEquals(expected, bookServiceImpl.findAll(PAGEABLE));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -90,7 +91,9 @@ class BookServiceImplTest {
         when(bookRepository.findById(VALID_ID)).thenReturn(Optional.ofNullable(VALID_BOOK));
         when(bookMapper.toDto(VALID_BOOK)).thenReturn(VALID_BOOK_RESPONSE_DTO);
 
-        assertEquals(VALID_BOOK_RESPONSE_DTO, bookServiceImpl.getById(VALID_ID));
+        BookResponseDto actual = bookServiceImpl.getById(VALID_ID);
+
+        assertEquals(VALID_BOOK_RESPONSE_DTO, actual);
     }
 
     @Test
@@ -100,7 +103,9 @@ class BookServiceImplTest {
         when(bookMapper.toModel(VALID_BOOK_REQUEST_DTO)).thenReturn(VALID_BOOK);
         when(bookMapper.toDto(VALID_BOOK)).thenReturn(VALID_BOOK_RESPONSE_DTO);
 
-        assertEquals(VALID_BOOK_RESPONSE_DTO, bookServiceImpl.save(VALID_BOOK_REQUEST_DTO));
+        BookResponseDto actual = bookServiceImpl.save(VALID_BOOK_REQUEST_DTO);
+
+        assertEquals(VALID_BOOK_RESPONSE_DTO, actual);
     }
 
     @Test
@@ -110,14 +115,16 @@ class BookServiceImplTest {
         when(bookRepository.findById(VALID_ID)).thenReturn(Optional.of(VALID_BOOK));
         when(bookMapper.toDto(VALID_BOOK)).thenReturn(VALID_BOOK_RESPONSE_DTO);
 
-        assertEquals(VALID_BOOK_RESPONSE_DTO, bookServiceImpl
-                .update(VALID_ID, VALID_BOOK_REQUEST_DTO));
+        BookResponseDto actual = bookServiceImpl.update(VALID_ID, VALID_BOOK_REQUEST_DTO);
+
+        assertEquals(VALID_BOOK_RESPONSE_DTO, actual);
     }
 
     @Test
     @DisplayName("Valid case of the deleteById method run")
     void deleteById_validBookID_isOk() {
         doNothing().when(bookRepository).deleteById(VALID_ID);
+
         bookServiceImpl.deleteById(VALID_ID);
         verify(bookRepository).deleteById(VALID_ID);
     }
@@ -132,8 +139,10 @@ class BookServiceImplTest {
 
         List<BookResponseDtoWithoutCategoryIds> expected =
                 List.of(VALID_BOOK_DTO_WITHOUT_CATEGORY_IDS);
+        List<BookResponseDtoWithoutCategoryIds> actual =
+                bookServiceImpl.findAllByCategoryId(PAGEABLE, VALID_ID);
 
-        assertEquals(expected, bookServiceImpl.findAllByCategoryId(PAGEABLE, VALID_ID));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -141,6 +150,7 @@ class BookServiceImplTest {
     void getBookById_validBookID_returnsValidBook() {
         when(bookRepository.findById(VALID_ID)).thenReturn(Optional.of(VALID_BOOK));
 
-        assertEquals(VALID_BOOK, bookServiceImpl.getBookById(VALID_ID));
+        Book actual = bookServiceImpl.getBookById(VALID_ID);
+        assertEquals(VALID_BOOK, actual);
     }
 }

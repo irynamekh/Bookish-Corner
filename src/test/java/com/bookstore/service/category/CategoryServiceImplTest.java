@@ -71,8 +71,9 @@ class CategoryServiceImplTest {
         when(categoryMapper.toDto(VALID_CATEGORY)).thenReturn(VALID_CATEGORY_RESPONSE_DTO);
 
         List<CategoryResponseDto> expected = List.of(VALID_CATEGORY_RESPONSE_DTO);
+        List<CategoryResponseDto> actual = categoryService.findAll(PAGEABLE);
 
-        assertEquals(expected, categoryService.findAll(PAGEABLE));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -81,7 +82,9 @@ class CategoryServiceImplTest {
         when(categoryRepository.getReferenceById(VALID_ID)).thenReturn(VALID_CATEGORY);
         when(categoryMapper.toDto(VALID_CATEGORY)).thenReturn(VALID_CATEGORY_RESPONSE_DTO);
 
-        assertEquals(VALID_CATEGORY_RESPONSE_DTO, categoryService.getById(VALID_ID));
+        CategoryResponseDto actual = categoryService.getById(VALID_ID);
+
+        assertEquals(VALID_CATEGORY_RESPONSE_DTO, actual);
     }
 
     @Test
@@ -91,7 +94,9 @@ class CategoryServiceImplTest {
         when(categoryMapper.toDto(VALID_CATEGORY)).thenReturn(VALID_CATEGORY_RESPONSE_DTO);
         when(categoryMapper.toModel(VALID_CATEGORY_REQUEST_DTO)).thenReturn(VALID_CATEGORY);
 
-        assertEquals(VALID_CATEGORY_RESPONSE_DTO, categoryService.save(VALID_CATEGORY_REQUEST_DTO));
+        CategoryResponseDto actual = categoryService.save(VALID_CATEGORY_REQUEST_DTO);
+
+        assertEquals(VALID_CATEGORY_RESPONSE_DTO, actual);
     }
 
     @Test
@@ -101,15 +106,18 @@ class CategoryServiceImplTest {
         when(categoryRepository.findById(VALID_ID)).thenReturn(Optional.of(VALID_CATEGORY));
         when(categoryMapper.toDto(VALID_CATEGORY)).thenReturn(VALID_CATEGORY_RESPONSE_DTO);
 
-        assertEquals(VALID_CATEGORY_RESPONSE_DTO, categoryService.update(
-                VALID_ID, VALID_CATEGORY_REQUEST_DTO));
+        CategoryResponseDto actual = categoryService.update(VALID_ID, VALID_CATEGORY_REQUEST_DTO);
+
+        assertEquals(VALID_CATEGORY_RESPONSE_DTO, actual);
     }
 
     @Test
     @DisplayName("Valid case of the deleteById method run")
     void deleteById_validCategoryID_isOk() {
         doNothing().when(categoryRepository).deleteById(VALID_ID);
+
         categoryService.deleteById(VALID_ID);
+
         verify(categoryRepository).deleteById(VALID_ID);
     }
 
@@ -121,7 +129,9 @@ class CategoryServiceImplTest {
 
         List<BookResponseDtoWithoutCategoryIds> expected =
                 List.of(VALID_BOOK_DTO_WITHOUT_CATEGORY_IDS);
+        List<BookResponseDtoWithoutCategoryIds> actual =
+                categoryService.getBooksByCategoryId(PAGEABLE, VALID_ID);
 
-        assertEquals(expected, categoryService.getBooksByCategoryId(PAGEABLE, VALID_ID));
+        assertEquals(expected, actual);
     }
 }

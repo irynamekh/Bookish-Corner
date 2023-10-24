@@ -131,7 +131,6 @@ class ShoppingCartControllerTest {
     void deleteItem_validRequest_isOk() throws Exception {
         String token = jwtUtil.generateToken("user@example.com");
 
-        CartItemResponseDto expected = buildValidItemResponseDto(VALID_ID);
         MvcResult result = mockMvc.perform(delete("/cart/cart-items/{id}", VALID_ID)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .content(objectMapper.writeValueAsString(VALID_ID))

@@ -73,6 +73,7 @@ class ShoppingCartServiceImplTest {
         when(shoppingCartRepository.save(buildValidCart())).thenReturn(buildValidCart());
 
         shoppingCartService.createCart(VALID_USER);
+
         verify(shoppingCartRepository).save(buildValidCart());
     }
 
@@ -137,7 +138,6 @@ class ShoppingCartServiceImplTest {
         doNothing().when(cartItemRepository).deleteById(VALID_ID);
 
         shoppingCartService.deleteItem(VALID_ID, VALID_USER.getId());
-
         verify(cartItemRepository).deleteById(VALID_ID);
     }
 
