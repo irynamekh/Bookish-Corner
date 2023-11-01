@@ -1,12 +1,12 @@
 <div align="center"> <h1 > <img src=logo.jpg width="300" align="center" alt="50"/></h1></div>
 
-<div align="center"><h1>Online Book Store </h1></div>
+<div align="center"><h1>Bookish Corner </h1></div>
 
 
 
 ___
 
-#### Welcome to the Online Bookstore project. 📚 
+#### Welcome to the Bookish Corner project. 📚 
 #### This reliable and secure Java Spring Boot program will help you create your own high-performance and successful projects faster and easier. This project combines a wide range of features and technologies to provide a secure e-commerce platform for users. Below you can familiarize yourself with the key aspects and features of our program.
 
 ## Table of contents
