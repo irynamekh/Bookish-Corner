@@ -7,7 +7,9 @@
 ___
 
 #### Welcome to the Bookish Corner project. 📚 
-#### This reliable and secure Java Spring Boot program will help you create your own high-performance and successful projects faster and easier. This project combines a wide range of features and technologies to provide a secure e-commerce platform for users. Below you can familiarize yourself with the key aspects and features of our program.
+#### This reliable and secure Java Spring Boot program will help you create your own high-performance and successful projects faster and easier. This project combines a wide range of features and technologies to provide a secure e-commerce platform for users. You don't need to install the app to experience the features of my app, because it already runs on AWS. 
+#### Below you can familiarize yourself with the key aspects and features of my program.
+
 
 ## Table of contents
 - [Project Overview](#project-overview)
@@ -157,6 +159,8 @@ This project has five controllers waiting for customer requests:
 
 [Back to content](#table-of-contents)
 
+> ### In case the application is installed locally:
+
  **By link below, you can see and interact with all endpoints:**
 
 `http://localhost:8080/api/swagger-ui/index.html`
@@ -182,6 +186,17 @@ This project has five controllers waiting for customer requests:
 <a href="https://www.loom.com/share/b62d86bc835b401abcdda565df91c842?sid=1955732b-0288-4c61-9341-eac1d4f58536" target="_blank" class="social-icon">
 Project presentation in Postman</a>
 
+> ### In case the application is running on AWS:
+
+By link below, you can see and interact with all endpoints:
+
+`http://ec2-54-174-84-140.compute-1.amazonaws.com/api/swagger-ui/index.html#/`
+
+This Postman collection is designed to test the functionality of the application, provided that the application is installed locally. 
+If you want to access the app's endpoints without installing it, you can still use this collection, but with a different link. 
+In requests, replace `http://localhost:8080/api/` with `http://ec2-54-174-84-140.compute-1.amazonaws.com/api/`.
+
+Data about the default user (admin) are also relevant in this case.
 
 <hr>
 <div id="contributing" align="center">
